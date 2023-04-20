@@ -1,0 +1,49 @@
+# Needed to install pyspark because it's related to java
+ARG IMAGE_VARIANT=slim-buster
+ARG OPENJDK_VERSION=8
+ARG PYTHON_VERSION=3.9.8
+ARG AIRFLOW_VERSION=2.5.1
+
+FROM python:${PYTHON_VERSION} AS py3
+FROM openjdk:${OPENJDK_VERSION}
+
+COPY --from=py3 / /
+
+
+#To update pip
+RUN pip install --upgrade pip
+# Install PySpark
+ARG PYSPARK_VERSION=3.2.0
+RUN pip --no-cache-dir install pyspark==${PYSPARK_VERSION}
+
+#The root folder in the docker container
+WORKDIR /docker_env
+#To copy tout ce qui est en local dans le container
+COPY /docker/airflow/requirements_airflow.txt ./
+
+#I pip install airflow in the folder
+RUN pip install "apache-airflow[celery]==2.5.1" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.1/constraints-3.7.txt"
+
+#To copy the parent folder into the docker workdir
+COPY . /docker_env
+
+#I set the environnement's variable like this command = export AIRFLOW_HOME=$(pwd) locally
+ENV AIRFLOW_HOME=/docker_env
+#export AIRFLOW__CORE__LOAD_EXAMPLES=False
+ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
+
+#The command to run inside the container to launch airflow init db, airflow scheduler, create the user&password and launch webserver
+#CMD ["sh", "-c", "airflow db init & airflow scheduler & airflow users create --role Admin --username admin --email admin --firstname admin --lastname admin --password admin & airflow webserver"]
+CMD airflow db init && \
+    airflow scheduler & \
+    airflow users create --role Admin \
+    --username admin \
+    --email admin \
+    --firstname admin \
+    --lastname admin \
+    --password admin && \
+    airflow webserver
+
+
+#Open in the broswer localhost:8080 
+# docker run -itd --rm --network movie_rec --name airflow -p 8080:8080 -v $(pwd):/docker_env airflow

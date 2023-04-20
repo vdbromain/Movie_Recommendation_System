@@ -1,0 +1,31 @@
+# To install PySpark beacause Java is needed
+ARG IMAGE_VARIANT=slim-buster
+ARG OPENJDK_VERSION=8
+ARG PYTHON_VERSION=3.9.8
+
+FROM python:${PYTHON_VERSION}-${IMAGE_VARIANT} AS py3
+FROM openjdk:${OPENJDK_VERSION}-${IMAGE_VARIANT}
+
+COPY --from=py3 / /
+
+# PySpark Install
+ARG PYSPARK_VERSION=3.2.0
+RUN pip --no-cache-dir install pyspark==${PYSPARK_VERSION}
+
+WORKDIR /docker_env
+#To copy requirements_strealit.txt in the Docker Container
+COPY docker/streamlit/requirements_streamlit.txt ./
+#To update pip
+RUN pip install --upgrade pip
+#To install all the libraries I need
+RUN pip install --no-cache-dir -r requirements_streamlit.txt
+
+#To copy everything from the parent folder into my docker workdir
+COPY . /docker_env
+
+#This port is needed for streamlit
+EXPOSE 8501
+
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
+#docker run -itd --rm --network movie_rec --name streamlit -p 8501:8501 -v $(pwd):/docker_env streamlit

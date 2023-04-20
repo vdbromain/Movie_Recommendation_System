@@ -1,0 +1,27 @@
+[2023-04-20T13:58:07.382+0000] {taskinstance.py:1083} INFO - Dependencies all met for <TaskInstance: Training_saving_model.training_saving_model_task manual__2023-04-20T13:58:02.938452+00:00 [queued]>
+[2023-04-20T13:58:07.391+0000] {taskinstance.py:1083} INFO - Dependencies all met for <TaskInstance: Training_saving_model.training_saving_model_task manual__2023-04-20T13:58:02.938452+00:00 [queued]>
+[2023-04-20T13:58:07.392+0000] {taskinstance.py:1279} INFO - 
+--------------------------------------------------------------------------------
+[2023-04-20T13:58:07.392+0000] {taskinstance.py:1280} INFO - Starting attempt 1 of 2
+[2023-04-20T13:58:07.392+0000] {taskinstance.py:1281} INFO - 
+--------------------------------------------------------------------------------
+[2023-04-20T13:58:07.428+0000] {taskinstance.py:1300} INFO - Executing <Task(PythonOperator): training_saving_model_task> on 2023-04-20 13:58:02.938452+00:00
+[2023-04-20T13:58:07.430+0000] {standard_task_runner.py:55} INFO - Started process 54314 to run task
+[2023-04-20T13:58:07.431+0000] {clientserver.py:543} INFO - Closing down clientserver connection
+[2023-04-20T13:58:07.435+0000] {standard_task_runner.py:82} INFO - Running: ['airflow', 'tasks', 'run', 'Training_saving_model', 'training_saving_model_task', 'manual__2023-04-20T13:58:02.938452+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/dags.py', '--cfg-path', '/tmp/tmp5d4gll8w']
+[2023-04-20T13:58:07.436+0000] {standard_task_runner.py:83} INFO - Job 3: Subtask training_saving_model_task
+[2023-04-20T13:58:07.499+0000] {task_command.py:388} INFO - Running <TaskInstance: Training_saving_model.training_saving_model_task manual__2023-04-20T13:58:02.938452+00:00 [running]> on host 57659a2d2b4a
+[2023-04-20T13:58:07.563+0000] {taskinstance.py:1507} INFO - Exporting the following env vars:
+AIRFLOW_CTX_DAG_EMAIL=admin@admin.be
+AIRFLOW_CTX_DAG_OWNER=Romain
+AIRFLOW_CTX_DAG_ID=Training_saving_model
+AIRFLOW_CTX_TASK_ID=training_saving_model_task
+AIRFLOW_CTX_EXECUTION_DATE=2023-04-20T13:58:02.938452+00:00
+AIRFLOW_CTX_TRY_NUMBER=1
+AIRFLOW_CTX_DAG_RUN_ID=manual__2023-04-20T13:58:02.938452+00:00
+[2023-04-20T13:58:18.285+0000] {logging_mixin.py:137} INFO - The model accuracy is : 78.05 %
+[2023-04-20T13:58:18.502+0000] {logging_mixin.py:137} INFO - Model is saved
+[2023-04-20T13:58:18.503+0000] {python.py:177} INFO - Done. Returned value was: None
+[2023-04-20T13:58:18.511+0000] {taskinstance.py:1318} INFO - Marking task as SUCCESS. dag_id=Training_saving_model, task_id=training_saving_model_task, execution_date=20230420T135802, start_date=20230420T135807, end_date=20230420T135818
+[2023-04-20T13:58:18.584+0000] {local_task_job.py:208} INFO - Task exited with return code 0
+[2023-04-20T13:58:18.634+0000] {taskinstance.py:2578} INFO - 1 downstream tasks scheduled from follow-on schedule check
