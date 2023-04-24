@@ -9,17 +9,15 @@ FROM openjdk:${OPENJDK_VERSION}
 
 COPY --from=py3 / /
 
-
 #To update pip
 RUN pip install --upgrade pip
+RUN pip install numpy
 # Install PySpark
 ARG PYSPARK_VERSION=3.2.0
 RUN pip --no-cache-dir install pyspark==${PYSPARK_VERSION}
 
 #The root folder in the docker container
 WORKDIR /docker_env
-#To copy tout ce qui est en local dans le container
-COPY /docker/airflow/requirements_airflow.txt ./
 
 #I pip install airflow in the folder
 RUN pip install "apache-airflow[celery]==2.5.1" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.1/constraints-3.7.txt"

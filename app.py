@@ -2,23 +2,25 @@
 import streamlit as st
 # Personnal functions
 from model.model_apply import title_rec_given_user
-
+from dags.model_training import open_csv
+from dags.model_training import join_pyspark_df
 # To Load the model
 from pyspark.ml.recommendation import ALS
 from pyspark.sql.functions import split
 from pyspark.sql.functions import regexp_extract, col
 from pyspark.sql import SparkSession
 
-spark = SparkSession.builder.appName("Movie_Recommendation_System").getOrCreate()
+# DB
+import psycopg2
+
+# To load the data
 movies_path = "./data/movies.csv"
 ratings_path = "./data/ratings.csv"
+# Open the 2 csv files
+movies_df, ratings_df = open_csv(movies_path, ratings_path)
 
-#Open the 2 csv files
-movies_df = spark.read.csv(movies_path, header=True, inferSchema=True)
-ratings_df = spark.read.csv(ratings_path, header=True, inferSchema=True)
-
-#Joining the 2 df in a single one and deleting the duplicated column
-df = movies_df.join(ratings_df, movies_df.movieId == ratings_df.movieId, "inner").drop(ratings_df["movieId"])
+# Joining the 2 df in a single one and deleting the duplicated column
+df = join_pyspark_df(movies_df, ratings_df, "movieId")
 
 # Extract year and the title for the title column
 df = df.withColumn('year', regexp_extract(col('title'), r'\((\d{4})\)$', 1))
@@ -48,6 +50,6 @@ if st.button("Recommendations"):
             st.write(f"For the user with the id {user_id} :")
         if wanted_year == "Yes":
             st.write(f"""The movie's title for the recommendation number {i+1} is : {recommendations[i][0]} 
-                        and has been released in {recommendations[i][1]}""")
+                    \nand has been released in {recommendations[i][1]}""")
         else : 
             st.write(f"The movie's title for the recommendation number {i+1} is : {recommendations[i][0]}")

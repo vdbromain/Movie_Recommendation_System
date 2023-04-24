@@ -1,7 +1,5 @@
-#Personnal Functions
-#from model_training import model_train_saving
-
-
+# Personnal Functions for the dag to run
+from model_training import model_training
 # Model use to make recommendations
 from pyspark.ml.recommendation import ALS
 # Model evaluation
@@ -10,38 +8,6 @@ from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.sql import SparkSession
 
 spark = SparkSession.builder.appName('app_name').getOrCreate()
-
-def model_train_saving ():
-    ratings = spark.read.csv('data/ratings.csv',inferSchema=True,header=True)
-    movies = spark.read.csv('data/movies.csv',inferSchema=True,header=True)
-
-    # Joining the data toegether and droping the duplicated column 'movieId'
-    data_sdf = ratings.join(movies,movies["movieId"]==ratings["movieId"]).drop(ratings["movieId"])
-    # Initialize the model
-    als = ALS(userCol="userId", itemCol = "movieId", ratingCol = "rating", coldStartStrategy='drop')
-    # Split the dataset between train and test
-    train, test = data_sdf.randomSplit([0.8, 0.2])
-    # Fit the train dataset for the model
-    alsModel=als.fit(train)
-
-    # Generating Predictions
-    prediction = alsModel.transform(test)
-
-    # Evaluating the model
-    evaluator = RegressionEvaluator(metricName="mse", labelCol="rating",  predictionCol="prediction")
-    mse = evaluator.evaluate(prediction)
-    print(f"The model accuracy is : {mse*100:.2f} %")
-
-    #if mse < 0.75 :
-    # What to do if the accuracy drop ? I should have a noticing of that.
-
-    # Saving the model
-    als.write().overwrite().save("./model/ALS_Movie_Rec_model")
-    print("Model is saved")
-
-#model_train_saving()
-
-
 
 #AIRFLOW
 from airflow import DAG
@@ -76,7 +42,7 @@ with DAG("Training_saving_model", default_args=defaults_args, schedule_interval=
     #end_dag
     end_task = EmptyOperator(task_id="end_task")
     #Print the first task is finished
-    training_saving_model_task = PythonOperator(task_id="training_saving_model_task", python_callable=model_train_saving)
+    training_saving_model_task = PythonOperator(task_id="training_saving_model_task", python_callable=model_training)
 
 #Defining the dependencies
 start_task >> training_saving_model_task >> end_task

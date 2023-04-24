@@ -1,3 +1,9 @@
 pyspark
 data
 .DS_Store
+.streamlit/secrets.toml
+logs
+airflow.db
+airflow-webserver.pid
+
+airflow-webserver.pid

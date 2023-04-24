@@ -1,0 +1,49 @@
+version: "3"
+services : #Define all the containers we will create
+  airflow: #Name of service who will create the container (like the image)
+    build: 
+      context: docker/airflow #To build the Dockerfile from the docker/airflow path
+      dockerfile: Docker_airflow #To specify the dockerfile's name
+    container_name: airflow-container #Name of the container
+    #command: "airflow db init && \ airflow scheduler & \ airflow users create --role Admin \ --username admin \ --email admin \ --firstname admin \ --lastname admin \ --password admin && \ airflow webserver"
+    #CMD line of the Dockerfile
+    ports: 
+      - "8080:8080" #Same ports as in the command -p 8080:8080
+    volumes: #to link a local folder to the container for it to keep the data changed by the container once it is closed
+      - ".:/docker_env" #/docker_env is the WORKDIR of the Dockerfile
+#    networks: #To link our container to a specified network
+#      - scrap
+
+  streamlit:
+    build: 
+      context: docker/streamlit
+      dockerfile: Docker_streamlit
+    container_name: streamlit-container
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/docker_env
+#    networks: #To link our container to a specified network
+#      - scrap1
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/postgres_db #@db because the service's name for postgres is db !
+
+
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRESS_DB: postgres_db
+    volumes: #make the link between the local db saved and the db in the postgres container
+      - db:/var/lib/postgresql/data
+volumes: #to keep a backup copy of the db locally when the container is closed
+  db:
+    driver: local
+#networks: #To create our networks to link our containers
+#  scrap:
+#  scrap1:
+#In our case, we don't need any network specification because our containers have to be connected on the same network and a default
+# network is created by the docker compose up command
