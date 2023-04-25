@@ -1,7 +1,9 @@
 pyspark
-data
+data/kaggle
 .DS_Store
-.streamlit/secrets.toml
 logs
 airflow.db
 airflow-webserver.pid
+.streamlit
+dags/__pycache__
+model/__pycache__
