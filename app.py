@@ -10,9 +10,6 @@ from pyspark.sql.functions import split
 from pyspark.sql.functions import regexp_extract, col
 from pyspark.sql import SparkSession
 
-# DB
-import psycopg2
-
 # To load the data
 movies_path = "./data/movies.csv"
 ratings_path = "./data/ratings.csv"
@@ -43,13 +40,48 @@ wanted_year = st.radio("Do you want to see the released year for the recommended
 model = ALS().load("./model/ALS_Movie_Rec_model/")
 
 # Create the button and when you click on it, it'll run the code in the condition
-if st.button("Recommendations"):
+# To center the button, put it in the column of the middle.
+col1, col2, col3 = st.columns([1,1,1])
+st.markdown(
+    """
+    <style>
+
+        div[data-testid="column"]:nth-of-type(2)
+        {
+            text-align: center;
+        } 
+    </style>
+    """,unsafe_allow_html=True
+)
+
+if col2.button("Recommendations"):
     recommendations = title_rec_given_user(user_id, df, model)
     for i in range(nb_of_rec):
         if i == 0:
-            st.write(f"For the user with the id {user_id} :")
+            st.subheader(f"For the user with the id {user_id} :")
         if wanted_year == "Yes":
             st.write(f"""The movie's title for the recommendation number {i+1} is : {recommendations[i][0]} 
                     \nand has been released in {recommendations[i][1]}""")
         else : 
             st.write(f"The movie's title for the recommendation number {i+1} is : {recommendations[i][0]}")
+
+col1, col2, col3 = st.columns(3)
+
+st.markdown(
+    """
+    <style>
+
+        div[data-testid="column"]:nth-of-type(3)
+        {
+            text-align: end;
+        } 
+    </style>
+    """,unsafe_allow_html=True
+)
+
+with col1:
+    st.markdown('<a href="https://www.linkedin.com/in/vdbromain/"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" width="30" height="30" alt="LinkedIn">Romain Vanden Bossche</a>', unsafe_allow_html=True)
+
+with col3:
+    st.markdown('<a href="https://github.com/vdbromain/Movie_Recommendation_System"><img src="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png" width="30" height="30" alt="GitHub">Romain Vanden Bossche</a>', unsafe_allow_html=True) #&nbsp;
+

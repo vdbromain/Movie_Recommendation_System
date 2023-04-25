@@ -30,8 +30,7 @@ services : #Define all the containers we will create
 #      - scrap1
     environment:
       DATABASE_URL: postgresql://user:password@db:5432/postgres_db #@db because the service's name for postgres is db !
-
-
+      
   db:
     image: postgres
     ports:
@@ -40,7 +39,7 @@ services : #Define all the containers we will create
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      #POSTGRESS_DB: postgres_db
+      
     volumes: #make the link between the local db saved and the db in the postgres container
       - db:/var/lib/postgresql/data
 volumes: #to keep a backup copy of the db locally when the container is closed

@@ -7,17 +7,18 @@ ARG AIRFLOW_VERSION=2.5.1
 FROM python:${PYTHON_VERSION} AS py3
 FROM openjdk:${OPENJDK_VERSION}
 
-COPY --from=py3 / /
+#The root folder in the docker container
+WORKDIR /docker_env
 
+COPY --from=py3 / /
+COPY docker/airflow/requirements_airflow.txt ./
 #To update pip
 RUN pip install --upgrade pip
-RUN pip install numpy
+#To install all the libraries I need
+RUN pip install --no-cache-dir -r requirements_airflow.txt
 # Install PySpark
 ARG PYSPARK_VERSION=3.2.0
 RUN pip --no-cache-dir install pyspark==${PYSPARK_VERSION}
-
-#The root folder in the docker container
-WORKDIR /docker_env
 
 #I pip install airflow in the folder
 RUN pip install "apache-airflow[celery]==2.5.1" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.1/constraints-3.7.txt"
