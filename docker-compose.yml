@@ -19,6 +19,9 @@ services : #Define all the containers we will create
       context: docker/streamlit
       dockerfile: Docker_streamlit
     container_name: streamlit-container
+    restart: always
+    depends_on:
+      - db
     ports:
       - "8501:8501"
     volumes:
@@ -32,15 +35,17 @@ services : #Define all the containers we will create
   db:
     image: postgres
     ports:
-      - "5432:5432"
+      - 5432:5432
+    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRESS_DB: postgres_db
+      #POSTGRESS_DB: postgres_db
     volumes: #make the link between the local db saved and the db in the postgres container
       - db:/var/lib/postgresql/data
 volumes: #to keep a backup copy of the db locally when the container is closed
   db:
+    name: db
     driver: local
 #networks: #To create our networks to link our containers
 #  scrap:

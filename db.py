@@ -8,7 +8,8 @@ def connect_db():
     Connecting the postgres DB created on Render.com
     """
     # Connect to the Postgres DB created on Render
-    conn = psycopg2.connect(database="postgres_db", user="user", password="password", host="db", port="5432")
+    conn = psycopg2.connect(dbname="postgres", user="user", password="password", host="0.0.0.0", port="5432")
+    
     # Create the cursor to execute somme querries on the db
     cursor = conn.cursor()
     return conn, cursor
@@ -25,7 +26,7 @@ def creating_tables():
     (
         movieId INTEGER NOT NULL PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
-        genres VARCHAR(255) NOT NULL
+        genre VARCHAR(255) NOT NULL
     )
     """,
     """
@@ -61,12 +62,10 @@ def creating_tables():
 
 def printing_tables_columns_names():
     conn, cursor = connect_db()
-    #conn = psycopg2.connect(database="dragonyte_db", user="dragonyte_db_user", password="iXz2wbLP4YYyV5wt9zGtcu9cYpuEFBtA", host="dpg-cgh9b6t269v15eki92a0-a.frankfurt-postgres.render.com", port="5432")
 
     # Creating a cursor object using the cursor() method
-    #cursor = conn.cursor()
     table_with_column = {}
-    tables = ('channel_volume', 'location', 'categories', 'company_share', 'market_sizes', 'subcategories')
+    tables = ('ratings', 'movies')
     for table in tables:
         #Collect all the columns name of a table and print them
         sql = f'''SELECT * FROM {table}'''
@@ -95,19 +94,39 @@ def deleting_all_the_tables():
     # Closing the connection
     conn.close()
 
-def insert_csv ():
-    insert = '''
-    COPY table_name
-    FROM 'C:\folder\file.csv' 
-    DELIMITER ',' 
-    CSV HEADER;
-    '''
+def cleaning_csv(file_name="movies.csv"):
+    with(open(file_name, "r")) as f :
+        next(f)
+        print(f[10])
+
+
+def insert_csv (file_name="movies.csv", table_name="movies"):
+    with open(file_name, 'r') as f:
+        next(f)  # skip the header row
+        conn, cursor = connect_db()
+        try:
+            cursor.copy_from(f, table_name, sep=',')
+        except:
+            print("The line has a error")
+        finally:
+            return print(f"Insert is done for {file_name}")
+        
+def select_all_data(table_name="movies"):
+    conn, cursor = connect_db()
+    query = f"SELECT * FROM {table_name}"
+    cursor.execute(query)
+    print(cursor.fetchall())
+    
 
 if __name__ == "__main__":
     # Deleting all the tables
-    deleting_all_the_tables()    
+    #deleting_all_the_tables()    
     # Create the tables
-    creating_tables()
+    #creating_tables()
     # Printing columns'names
     #table_with_column = printing_tables_columns_names()
+    #insert_csv()
+    #select_all_data()
+
+    cleaning_csv()
     

@@ -90,4 +90,5 @@ def model_training():
     df_final = join_pyspark_df(ratings, movies, "movieId")
     model_train_saving(df_final)
 
-model_training()
+if __name__ == "__main__":
+    model_training()

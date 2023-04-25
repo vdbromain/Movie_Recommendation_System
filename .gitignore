@@ -5,5 +5,3 @@ data
 logs
 airflow.db
 airflow-webserver.pid
-
-airflow-webserver.pid
