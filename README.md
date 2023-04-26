@@ -26,7 +26,7 @@ Duration : `7 days
   
   An Airflow DAG is a collection of all the tasks you want to run, organized in a way that reflects their relationships and dependencies.
   
-  ![DAG.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/DAG.png)
+  ![DAG.png](img/DAG.png)
 
 - Data folder : stores the csv files and the database script.
 
@@ -36,7 +36,7 @@ Duration : `7 days
 
 Here is a picture to show you the project's structure
 
-![Main_diag_airflow.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/app_movie_recom_diag.png)
+![Main_diag_airflow.png](img/app_movie_recom_diag.png)
 
 As you can see in the airflow-container, airflow is managing everything.
 
@@ -93,7 +93,7 @@ docker run -itd --rm --network rec_movie_sys --name streamlit-container -p 8501:
 9. As the three dockers'containers are on the same network, you can click on this link to see the streamlit app live : [http://0.0.0.0:8501/](http://0.0.0.0:8501/).
    Now, you can play a bit around with the app, enjoy !
    
-   ![Airflow_Dag_Page.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/welcome_app.png)
+   ![Airflow_Dag_Page.png](img/welcome_app.png)
 
 10. `If you want to go to the Airflow's portal you can click on this link : http://0.0.0.0:8080/
 
@@ -101,13 +101,13 @@ Username : admin
 
 Password : admin
 
-![Airflow_Login.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/login.png)
+![Airflow_Login.png](img/login.png)
 
 You click on the button on the left to activate the DAG. A few seconds later, you'll see a new folder named "ALS_Movie_Rec_model" in the model folder that contains the new files for the model who has just been saved. If you already have a folder called "ALS_Movie_Rec_model", delete it and you'll see it'll appear after running the dag.
 
 
 
-![Airflow_Dag_Page.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/main_screen.png)
+![Airflow_Dag_Page.png](img/main_screen.png)
 
 ## Results
 
@@ -119,19 +119,17 @@ My solution gives Movies Recommendations for :
 
 - with the release year of the recommended movies if desired
 
-
-
 The main goal for this project was to make an app with streamlit to use the Movie Recommendation System built with PySpark. Afterwards, I put each part of the project in Docker containers to make it deployable on the cloud. And I begin to build the postgreSQL database to add new users with movie tastes and ratings in order to update the recommendations system with Airflow when we add new users. So, this structure can be "easily" adapted to add users to the database, updated regularly the model and retrain it when we add users, used on any operating system, and deployed online if needed.
 
 ## Examples
 
 Here, you have an example of 3 recommendations movies for the user with the ID : 457 and the released year of the movies to be displayed.
 
-![Airflow_Login.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/rec_with_year.png)
+![Airflow_Login.png](img/rec_with_year.png)
 
 Here, you have 2 movies recommendations for the user ID : 578 with the released year not displayed as required by the user.
 
-![Airflow_Login.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/rec_without_year.png)
+![Airflow_Login.png](img/rec_without_year.png)
 
 ## Improvements
 
