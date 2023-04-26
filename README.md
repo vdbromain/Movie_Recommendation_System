@@ -215,7 +215,6 @@ Here, you have 2 movies recommendations for the user ID : 578 with the released 
 <a href="https://www.linkedin.com/in/vdbromain/">
   <img title="" src="img/linked-in-logo.png" alt="linked-in-logo.png" width="62">
 </a>
-<img src="img/blank.png" width="500" height="60">
 <a href="https://github.com/vdbromain">
   <img title="" src="img/GitHub-logo.png" alt="GitHub-logo.png" width="62">
 </a>
