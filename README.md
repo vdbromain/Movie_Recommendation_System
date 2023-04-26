@@ -90,12 +90,15 @@ docker run -itd --rm --network rec_movie_sys --name streamlit-container -p 8501:
  docker run --rm --network rec_movie_sys --name postgres_container -e POSTGRES_PASSWORD=password -d -p 5432:5432 postgres
 ```
 
-9. As the three dockers'containers are on the same network, you can click on this link to see the streamlit app live : [http://0.0.0.0:8501/](http://0.0.0.0:8501/).
+9. <div align="justify"> 
+   As the three dockers'containers are on the same network, you can click on this link to see the streamlit app live : 
+   <a href="http://0.0.0.0:8501/">http://0.0.0.0:8501/</a>
    Now, you can play a bit around with the app, enjoy !
+   </div>
    
    ![Airflow_Dag_Page.png](img/welcome_app.png)
 
-10. `If you want to go to the Airflow's portal you can click on this link : http://0.0.0.0:8080/
+10. If you want to go to the Airflow's portal you can click on this link : http://0.0.0.0:8080/
 
 Username : admin
 
