@@ -7,8 +7,8 @@ def connect_db():
     """
     Connecting the postgres DB created on Render.com
     """
-    # Connect to the Postgres DB created on Render
-    conn = psycopg2.connect(dbname="postgres", user="user", password="password", host="0.0.0.0", port="5432")
+    # Connect to the Postgres DB created in the docker container by default dbname = user = postgres !
+    conn = psycopg2.connect(dbname="postgres", user="postgres", password="password", host="0.0.0.0", port="5432")
     
     # Create the cursor to execute somme querries on the db
     cursor = conn.cursor()
@@ -120,13 +120,13 @@ def select_all_data(table_name="movies"):
 
 if __name__ == "__main__":
     # Deleting all the tables
-    #deleting_all_the_tables()    
+    deleting_all_the_tables()    
     # Create the tables
-    #creating_tables()
+    creating_tables()
     # Printing columns'names
     #table_with_column = printing_tables_columns_names()
     #insert_csv()
     #select_all_data()
 
-    cleaning_csv()
+    #cleaning_csv()
     

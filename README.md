@@ -54,79 +54,105 @@ The postgresql-container contains the database with the tables where the csv fil
 
 3. Open the root of the folder in your terminal
 
-4. Build the 3 containers at once with the docker-compose file to be able to connect to the streamlit app and to the airflow web UI if you want, to see the results of the movies recommendations for a defined user ID. All of this, with this simple command :
-   
-   ```docker
-   docker compose up
-   ```
-   
-   It will take a bit a time for docker to build each image it needs to finally run the containers after a few minutes.
+4. Build the docker image for airflow using Docker_airflow file to be able to use Airflow with any operating system
 
-5. When everything runs succesfully with a result like this in your terminal :
-   
-   ![DAG.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/terminal_docker_compose.png)
+```docker
+docker build -f docker/airflow/Docker_airflow -t airflow_image .
+```
 
-6. As the three dockers'containers are on the same network, you can click on this link to see the streamlit app live : [http://0.0.0.0:8501/](http://0.0.0.0:8501/)
+5. Build the docker image for streamlit using Docker_streamlit file to be able to use streamlit with any operating system
 
-7. Now, you can play a bit around with the app, enjoy !
+```docker
+docker build -f docker/streamlit/Docker_streamlit -t streamlit_image .
+```
 
-8. If you want to go to the Airflow's portal you can click on this link : http://0.0.0.0:9090/
-   
-   Username : admin
-   
-   Password : admin
-   
-   ![Airflow_Login.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/login.png)
+6. Create a connection between containers using docker network
 
-9. You click on the button on the left to activate the DAG and afterwards on the little play arrow under actions on the right. A few seconds later, you'll see a new folder named "ALS_Movie_Rec_model" in the model folder that contains the new files for the model who has just been saved. If you already have a folder called "ALS_Movie_Rec_model", delete it and you'll see it'll appear after running the dag.
+```docker
+docker network create rec_movie_sys 
+```
+
+7. Create the docker container with Airflow from the airflow_image we've just built
+
+```docker
+docker run -itd --rm --network rec_movie_sys --name airflow-container -p 8080:8080 -v $(pwd):/docker_env airflow_image
+```
+
+7. Create the docker container with Streamlit from the streamlit_image we've just built
+
+```docker
+docker run -itd --rm --network rec_movie_sys --name streamlit-container -p 8501:8501 -v $(pwd):/docker_env streamlit_image
+```
+
+8. Create the docker container with PostgreSQL in it. This command will automatically pull the docker's image needed to run the container from dockerhub:
+
+```docker
+ docker run --rm --network rec_movie_sys --name postgres_container -e POSTGRES_PASSWORD=password -d -p 5432:5432 postgres
+```
+
+9. As the three dockers'containers are on the same network, you can click on this link to see the streamlit app live : [http://0.0.0.0:8501/](http://0.0.0.0:8501/).
+   Now, you can play a bit around with the app, enjoy !
    
-   
-   
-   ![Airflow_Dag_Page.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/main_screen.png)
+   ![Airflow_Dag_Page.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/welcome_app.png)
+
+10. `If you want to go to the Airflow's portal you can click on this link : http://0.0.0.0:8080/
+
+Username : admin
+
+Password : admin
+
+![Airflow_Login.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/login.png)
+
+You click on the button on the left to activate the DAG. A few seconds later, you'll see a new folder named "ALS_Movie_Rec_model" in the model folder that contains the new files for the model who has just been saved. If you already have a folder called "ALS_Movie_Rec_model", delete it and you'll see it'll appear after running the dag.
+
+
+
+![Airflow_Dag_Page.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/main_screen.png)
 
 ## Results
 
-My solution scraped Yahoo Finance data for one ticker ("ACN") daily following a preset shcedule. The stock informations obtained from the scraper includes :
+My solution gives Movies Recommendations for :
 
-- Date
+- a defined user ID
 
-- Open
+- a defined number of movies recommendations desired
 
-- High
+- with the release year of the recommended movies if desired
 
-- Low
 
-- Close*
 
-- Ajd Close**
+The main goal for this project was to make an app with streamlit to use the Movie Recommendation System built with PySpark. Afterwards, I put each part of the project in Docker containers to make it deployable on the cloud. And I begin to build the postgreSQL database to add new users with movie tastes and ratings in order to update the recommendations system with Airflow when we add new users. So, this structure can be "easily" adapted to add users to the database, updated regularly the model and retrain it when we add users, used on any operating system, and deployed online if needed.
 
-- Volume
+## Examples
 
-which are important to investors interested in financial markets.
+Here, you have an example of 3 recommendations movies for the user with the ID : 457 and the released year of the movies to be displayed.
 
-The main goal for this project was creating a script that automates the processes. This structure can be "easily" adapted to scrap data from multiple companies, updated regularly on an user defined scheduled, used on any operating system, and deployed online if needed.
+![Airflow_Login.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/rec_with_year.png)
+
+Here, you have 2 movies recommendations for the user ID : 578 with the released year not displayed as required by the user.
+
+![Airflow_Login.png](/Users/cecilewinand/Desktop/BeCode_Projects/Movie_Recommendation_System/img/rec_without_year.png)
 
 ## Improvements
 
-- ###### scrapper
+- ###### Database
   
-  - Adapt the scrapping script to scrap stock informations of 100+ companies
+  - Add the csv files in it
   
-  - Implement threading to speed up the scraping process
+  - Build a function to add new users with their movies tastes and ratings
 
-- ###### data's storage :
+- ###### Airflow :
   
-  - Create a database to store the scraped data to facilitate data management (updating) and access to it
+  - With the improvements on the database, we could then update the model's recommendations when we add a new user to the database.
 
-- ###### docker
+- ###### Docker
   
-  - Create a docker-compose file to skip step 4 to step 7 included in the installation and usage procédure above.
+  - Create a docker-compose file to skip step 4 to step 8 included in the installation and usage procedure above.
+  - I built one but I didn't know why yet when I launch it there is an issue with the database initialisation of Airflow whereas in my docker file, I don't have this problem and the docker compose uses this same docker file.
 
-- ###### deployment
+- ###### Deployment
   
   - Deploy it on the cloud 
-  
-  - Create an online app where users could interact directly with the scraper selecting the ticker, the timing range... they want.
 
 ## Contact
 
