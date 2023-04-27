@@ -4,6 +4,14 @@
 
 
 
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Apache Spark](https://img.shields.io/badge/Apache%20Spark-FDEE21?style=flat-square&logo=apachespark&logoColor=black)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=for-the-badge&logo=Apache%20Airflow&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white
+
+
 ## Description
 
 <div align="justify">
@@ -66,6 +74,7 @@ To clarify the relation between the three containers, the posgresql-container st
 The streamlit-container displays the app has who could see it at the end. PySpark is needed to open the datasets, the model who was saved in the first container and to count the number of users in the datasets.
 
 The postgresql-container contains the database with the tables where the csv files will be stored in the next version. Right now, the database exists and I manage to connect to it and to write the tables in it from the streamlit-container.
+
 </div>
 
 ## Installation and Usage
